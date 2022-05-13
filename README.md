@@ -8,3 +8,5 @@ yarn add -D typescript ts-node ethers zksync-web3 hardhat @matterlabs/hardhat-zk
 npm install @openzeppelin/contracts
 
 yarn hardhat compile
+
+yarn hardhat deploy-zksync
