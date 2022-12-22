@@ -819,7 +819,7 @@ const airnodeAbiJson = [
 ]
 // DERIVING THE PATH OF THE SPONSOR WALLET
 // ADD IN THE ADDRESS OF THE REQUESTER CONTRACT
-const requesterAddressTest = "0x03A80cE62615F2d0C942EC283508C27729585988";
+const requesterAddressTest = "0xC6002691DDc5317213C9788668AbE02212424C22";
 const deriveWalletPathFromSponsorAddress = (sponsorAddress: string, protocolId) => {
     const sponsorAddressBN = ethers.BigNumber.from(ethers.utils.getAddress(sponsorAddress));
     const paths : string[] = [];
@@ -836,14 +836,15 @@ console.log(`0x${hdwallet.derive(`m/44'/60'/0'/${deriveWalletPathFromSponsorAddr
 const PKEYsponsorWallet = (hdwallet.derive(`m/44'/60'/0'/${deriveWalletPathFromSponsorAddress(requesterAddressTest, 1)}`).getPrivateKey().toString('hex'))
 
 // An example of a deploy script that will deploy and call a simple contract.
-export default async function (hre: HardhatRuntimeEnvironment) {
+//export default async function (hre: HardhatRuntimeEnvironment) {
+  async function main(){
 console.log(`Running deploy script for the Requester contract`);
 
 // Initialize the wallets.
 
     const sponsorWallet = new ethers.Wallet(PKEYsponsorWallet)
     const signer = provider.getSigner(sponsorWallet.address)
-    const wallet = new ethers.Wallet("");
+    const wallet = new ethers.Wallet(PKEYsponsorWallet);
     const signer2 = provider.getSigner(wallet.address)
 
     const rrpAddress = "0xbD5263fa8c93Deb3417d49E63b444cBd541922FD";
@@ -892,3 +893,10 @@ console.log(`Running deploy script for the Requester contract`);
     // console.log(provider.getTransactionReceipt(fulfill.hash))
 
 }
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
