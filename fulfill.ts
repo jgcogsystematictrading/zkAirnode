@@ -834,7 +834,9 @@ const deriveWalletPathFromSponsorAddress = (sponsorAddress: string, protocolId) 
 const hdwallet = HDWallet.fromMnemonic("sea little door spare swim filter lawn match hurry stove garbage oven")
 console.log(`0x${hdwallet.derive(`m/44'/60'/0'/${deriveWalletPathFromSponsorAddress(requesterAddressTest, 1)}`).getAddress().toString('hex')}`)
 const PKEYsponsorWallet = (hdwallet.derive(`m/44'/60'/0'/${deriveWalletPathFromSponsorAddress(requesterAddressTest, 1)}`).getPrivateKey().toString('hex'))
-
+const airnodeWalletKey = (hdwallet.derive(`m/44'/60'/0'/${deriveWalletPathFromSponsorAddress("0x6A7F359d025aE2ebdC36E594F633b39a02Bfe88C", 1)}`).getPrivateKey().toString('hex'))
+console.log('airnode pkey')
+console.log(airnodeWalletKey)
 // An example of a deploy script that will deploy and call a simple contract.
 //export default async function (hre: HardhatRuntimeEnvironment) {
   async function main(){
@@ -843,6 +845,7 @@ console.log(`Running deploy script for the Requester contract`);
 // Initialize the wallets.
 
     const sponsorWallet = new ethers.Wallet(PKEYsponsorWallet)
+    const airnodeWallet = new ethers.Wallet("08a8f96e6626e261bffdeeecd61e500e4bbdd79bf131334320f2646780da5777")
     const signer = provider.getSigner(sponsorWallet.address)
     const wallet = new ethers.Wallet(PKEYsponsorWallet);
     const signer2 = provider.getSigner(wallet.address)
@@ -852,7 +855,7 @@ console.log(`Running deploy script for the Requester contract`);
     const rrpContract = new ethers.Contract(rrpAddress, airnodeAbiJson, signer2);
 
     const airnode = "0x6A7F359d025aE2ebdC36E594F633b39a02Bfe88C"
-    const sponsor = requesterAddressTest;
+    const sponsor = "0xC6002691DDc5317213C9788668AbE02212424C22";
     const endpointId = "0xfd19ee2c054da313208b4a6106c336286fc6a9f72dd5d0bc8619c018c384c74a";
     const airnodeXpub = "xpub6DUz9nJVxJpVieSaBesGdwRgdznuPe875cczeg6HE1RoN7Hzm9Dsty8i8T5h4ZQzm4ShkwCkT2VXwnJETQH4XjGHY6bbKdqypLin7wrxoHY";
     const sponsorWalletAddress = deriveSponsorWalletAddress(airnodeXpub, airnode, sponsor);
@@ -866,7 +869,7 @@ console.log(`Running deploy script for the Requester contract`);
     const data = ethers.utils.defaultAbiCoder.encode(['int256'], [sample_data]);
     console.log(`Sample Data Encoded: ${data}`);
     async function getSignature(){
-        const signature = await sponsorWallet.signMessage(
+        const signature = await airnodeWallet.signMessage(
             ethers.utils.arrayify(
             ethers.utils.keccak256(
                 ethers.utils.solidityPack(['bytes32', 'uint256'], [requestId, data])
